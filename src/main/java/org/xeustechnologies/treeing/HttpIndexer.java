@@ -49,7 +49,7 @@ public class HttpIndexer {
                 IndexWriter.MaxFieldLength.LIMITED );
     }
 
-    public void indexUrl(String url, String content, String mime) throws IOException {
+    public void indexUrl(String url, String content, String mime) {
         try {
             Document doc = new Document();
 
