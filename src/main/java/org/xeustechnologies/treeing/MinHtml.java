@@ -32,6 +32,10 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class MinHtml {
     protected final List<Tag> links;
     protected final List<Tag> images;

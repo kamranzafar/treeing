@@ -32,6 +32,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class HttpIndexer {
 
     private static final String MIME = "mime";

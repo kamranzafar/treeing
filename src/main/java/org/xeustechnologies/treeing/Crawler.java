@@ -34,6 +34,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.xeustechnologies.treeing.Tag.LinkType;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class Crawler extends HttpConnector implements Runnable {
 
     private final BlockingQueue<String> urls = new LinkedBlockingQueue<String>();

@@ -25,6 +25,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class MimeTypeHelper {
     protected static ResourceBundle mimeTypesBundle = ResourceBundle
             .getBundle( "org.xeustechnologies.treeing.mimetypes.properties" );

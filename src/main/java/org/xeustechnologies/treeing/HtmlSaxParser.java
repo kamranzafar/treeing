@@ -23,6 +23,10 @@ package org.xeustechnologies.treeing;
 import org.apache.xerces.parsers.AbstractSAXParser;
 import org.cyberneko.html.HTMLConfiguration;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class HtmlSaxParser extends AbstractSAXParser {
     public HtmlSaxParser() {
         super( new HTMLConfiguration() );

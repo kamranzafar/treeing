@@ -24,6 +24,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Kamran
+ * 
+ */
 public class Tag {
     protected String name;
     protected String value;
