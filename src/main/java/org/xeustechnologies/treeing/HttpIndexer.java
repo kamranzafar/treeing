@@ -34,6 +34,9 @@ import org.apache.lucene.util.Version;
 
 public class HttpIndexer {
 
+    private static final String MIME = "mime";
+    private static final String URL = "url";
+    private static final String CONTENTS = "contents";
     private final IndexWriter writer;
 
     public HttpIndexer(String indexDir) throws IOException {
@@ -46,9 +49,9 @@ public class HttpIndexer {
         try {
             Document doc = new Document();
 
-            doc.add( new Field( "contents", new StringReader( content ) ) );
-            doc.add( new Field( "url", url, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
-            doc.add( new Field( "mime", mime, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+            doc.add( new Field( CONTENTS, new StringReader( content ) ) );
+            doc.add( new Field( URL, url, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
+            doc.add( new Field( MIME, mime, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
             writer.addDocument( doc );
             System.out.println( "Added: " + url );

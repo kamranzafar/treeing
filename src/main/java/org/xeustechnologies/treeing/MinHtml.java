@@ -167,7 +167,8 @@ public class MinHtml {
         }
 
         private void setLinkType(Tag l, String src) {
-            if( src.toLowerCase().startsWith( "http:" ) || src.toLowerCase().startsWith( "ftp:" ) ) {
+            if( src.toLowerCase().startsWith( "http:" ) || src.toLowerCase().startsWith( "ftp:" )
+                    || src.toLowerCase().startsWith( "https:" ) ) {
                 l.setLinkType( Tag.LinkType.FOREIGN );
             } else if( src.toLowerCase().startsWith( "mailto:" ) ) {
                 l.setLinkType( Tag.LinkType.MAIL );

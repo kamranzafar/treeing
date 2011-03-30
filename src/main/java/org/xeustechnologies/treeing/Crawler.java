@@ -23,11 +23,9 @@ package org.xeustechnologies.treeing;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.Proxy.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,12 +34,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.xeustechnologies.treeing.Tag.LinkType;
 
-public class Crawler extends Thread {
+public class Crawler extends HttpConnector implements Runnable {
 
     private final BlockingQueue<String> urls = new LinkedBlockingQueue<String>();
     private final List<String> crawledUrls = Collections.synchronizedList( new ArrayList<String>() );
     private final int poolSize;
     private final HttpIndexer indexer;
+    private Proxy proxy = Proxy.NO_PROXY;
 
     public Crawler(String url, int poolSize, String indexFolder) throws InterruptedException, IOException {
         urls.put( url );
@@ -49,7 +48,11 @@ public class Crawler extends Thread {
         indexer = new HttpIndexer( indexFolder );
     }
 
-    @Override
+    public Crawler(String url, int poolSize, String indexFolder, Proxy proxy) throws InterruptedException, IOException {
+        this( url, poolSize, indexFolder );
+        this.proxy = proxy;
+    }
+
     public void run() {
         try {
             CrawlTask t[] = new CrawlTask[poolSize];
@@ -66,12 +69,16 @@ public class Crawler extends Thread {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
-            return;
+        } finally {
+            try {
+                indexer.closeIndex();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     class CrawlTask extends Thread {
-
         BlockingQueue<String> urls;
         List<String> crawledUrls;
 
@@ -97,22 +104,22 @@ public class Crawler extends Thread {
                     System.err.println( "URL: " + e.getMessage() + " not found" );
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return;
                 }
             }
         }
 
         private void crawl(String urlstr) throws Exception {
-
             crawledUrls.add( urlstr );
 
-            URL url = new URL( urlstr );
-            URLConnection conn = url
-                    .openConnection( new Proxy( Type.HTTP, new InetSocketAddress( "10.105.24.70", 8080 ) ) );
+            // Only http/https links are crawled
+            if( !urlstr.toLowerCase().startsWith( "http" ) ) {
+                return;
+            }
+
+            URLConnection conn = urlstr.toLowerCase().startsWith( "https:" ) ? getSecureConnection( urlstr, proxy )
+                    : getConnection( urlstr, proxy );
 
             String mime = conn.getHeaderField( "Content-Type" );
-
-            // System.out.println( mime );
 
             if( mime != null && mime.contains( "text/html" ) ) {
                 InputStream in = conn.getInputStream();
@@ -127,15 +134,11 @@ public class Crawler extends Thread {
                     if( !nurlstr.startsWith( "javascript:" ) ) {
                         URL nurl = new URL( conn.getURL(), nurlstr );
 
-                        // System.out.println( "nurl: " + nurl.getHost() );
-
                         String nextUrl = nurl.toString();
 
                         if( l.getLinkType() == LinkType.LOCAL && !crawledUrls.contains( nextUrl )
                                 && !urls.contains( nextUrl ) ) {
                             urls.put( nextUrl );
-                            // System.out.println( "Next URL to crawl: " +
-                            // nextUrl );
                         }
                     }
                 }
@@ -143,34 +146,7 @@ public class Crawler extends Thread {
                 synchronized (indexer) {
                     indexer.indexUrl( urlstr, html.getHtml(), mime );
                 }
-                // for( Tag t : html.getImages() ) {
-                // System.out.println( t.getAttributes().get( "src" ) );
-                // }
-                //
-                // for( Tag s : html.getScripts() ) {
-                // System.out.println( s.getLinkType().name() + " : " +
-                // s.getAttributes().get( "src" ) );
-                // }
             }
-        }
-    }
-
-    public void close() throws IOException {
-        indexer.closeIndex();
-    }
-
-    public static void main(String[] args) {
-        Crawler c = null;
-        try {
-            c = new Crawler( "http://www.meteor.ie", 2, "c:/test/luc" );
-            c.start();
-        } catch (Exception e) {
-            try {
-                c.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
         }
     }
 }

@@ -79,7 +79,7 @@ public class Tag {
     /**
      * Used for tags that point to a resource default is NA (Not Applicable)
      */
-    public enum LinkType {
+    public static enum LinkType {
         LOCAL, FOREIGN, MAIL, ANCHOR, NA
     }
 }

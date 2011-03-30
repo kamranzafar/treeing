@@ -1,3 +1,3 @@
 h1. Overview
 
-Treeing is a Java test project that demonstrates multi-threaded web crwaling, content indexing and searching using Apache Lucene.
+Treeing is a Java test project that demonstrates multi-threaded web crawling, indexing and searching using Apache Lucene.
