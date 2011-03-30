@@ -44,7 +44,7 @@ public class TreeingTest {
     @Test
     public void testTreeing() throws Exception {
         try {
-            Thread t = new Thread( new Crawler( "http://www.python.org", 2, "c:/test/luc" ) );
+            Thread t = new Thread( new WebCrawler( "http://www.python.org", 2, "c:/test/luc" ) );
             t.start();
             t.join();
         } catch (Exception e) {

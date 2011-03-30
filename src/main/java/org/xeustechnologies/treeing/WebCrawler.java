@@ -32,27 +32,31 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.xeustechnologies.esl4j.LogManager;
+import org.xeustechnologies.esl4j.Logger;
 import org.xeustechnologies.treeing.Tag.LinkType;
 
 /**
  * @author Kamran
  * 
  */
-public class Crawler extends HttpConnector implements Runnable {
+public class WebCrawler extends HttpConnector implements Runnable {
 
     private final BlockingQueue<String> urls = new LinkedBlockingQueue<String>();
     private final List<String> crawledUrls = Collections.synchronizedList( new ArrayList<String>() );
     private final int poolSize;
     private final HttpIndexer indexer;
     private Proxy proxy = Proxy.NO_PROXY;
+    private Logger logger = LogManager.getLogger( WebCrawler.class );
 
-    public Crawler(String url, int poolSize, String indexFolder) throws InterruptedException, IOException {
+    public WebCrawler(String url, int poolSize, String indexFolder) throws InterruptedException, IOException {
         urls.put( url );
         this.poolSize = poolSize;
         indexer = new HttpIndexer( indexFolder );
     }
 
-    public Crawler(String url, int poolSize, String indexFolder, Proxy proxy) throws InterruptedException, IOException {
+    public WebCrawler(String url, int poolSize, String indexFolder, Proxy proxy) throws InterruptedException,
+            IOException {
         this( url, poolSize, indexFolder );
         this.proxy = proxy;
     }
@@ -63,7 +67,7 @@ public class Crawler extends HttpConnector implements Runnable {
 
             for( int i = 0; i < poolSize; i++ ) {
                 t[i] = new CrawlTask( urls, crawledUrls );
-                System.out.println( "Staring CrawlTask Thread: " + ( i + 1 ) );
+                logger.info( "Staring CrawlTask Thread: " + ( i + 1 ) );
                 t[i].start();
             }
 
@@ -97,7 +101,7 @@ public class Crawler extends HttpConnector implements Runnable {
                 try {
                     String url = urls.take();
 
-                    System.out.println( "Crawling: " + url );
+                    logger.info( "Crawling: " + url );
 
                     crawl( url );
 
@@ -105,7 +109,7 @@ public class Crawler extends HttpConnector implements Runnable {
                     e.printStackTrace();
                     return;
                 } catch (FileNotFoundException e) {
-                    System.err.println( "URL: " + e.getMessage() + " not found" );
+                    logger.error( "URL: " + e.getMessage() + " not found" );
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

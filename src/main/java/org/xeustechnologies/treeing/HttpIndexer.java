@@ -31,6 +31,8 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.xeustechnologies.esl4j.LogManager;
+import org.xeustechnologies.esl4j.Logger;
 
 /**
  * @author Kamran
@@ -42,6 +44,7 @@ public class HttpIndexer {
     private static final String URL = "url";
     private static final String CONTENTS = "contents";
     private final IndexWriter writer;
+    private Logger logger = LogManager.getLogger( HttpIndexer.class );
 
     public HttpIndexer(String indexDir) throws IOException {
         FSDirectory dir = FSDirectory.open( new File( indexDir ) );
@@ -58,10 +61,10 @@ public class HttpIndexer {
             doc.add( new Field( MIME, mime, Field.Store.YES, Field.Index.NOT_ANALYZED ) );
 
             writer.addDocument( doc );
-            System.out.println( "Added: " + url );
+            logger.info( "Added: " + url );
             writer.commit();
         } catch (Exception e) {
-            System.out.println( "Could not add: " + url );
+            logger.info( "Could not add: " + url );
         }
     }
 
