@@ -1,3 +1,30 @@
 h1. Overview
 
-Treeing is a Java test project that demonstrates multi-threaded web crawling, indexing and searching using Apache Lucene.
+Treeing a simple Java project that demonstrates Website crawling, indexing and searching using Apache Lucene. This project provides fundamentals for building website search engines.
+
+h1. Usage
+
+Treeing provides a simple set of classes, including a multi-threaded web crawler and a simple HTML parser, and is very easy to embed in Java application. 
+
+h2. Crawling and indexing websites  
+
+Below is an example of how to run the website crawler that crawls and indexes the web content.
+
+<pre>                                                                           
+<code>                                                                         
+  Thread t = new Thread( new WebCrawler( "http://www.python.org", 2, "c:/test/luc" ) );
+  t.start();
+  t.join();                                                                
+</code>                                                                         
+</pre>
+
+The above code snippet will run crawl all the entire web site.
+
+h2. Searching the index
+
+Once the index is created it can be searched by using Lucene API. See the test case provided with the source for more details.
+
+h1. Resources
+
+"Apache Lucene":http://lucene.apache.org/java/docs/index.html
+"Crawl, index and search":http://www.xeustechnologies.org/kamran/2011/03/29/crawl-index-and-search/
