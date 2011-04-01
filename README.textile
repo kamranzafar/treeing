@@ -18,7 +18,7 @@ Below is an example of how to run the website crawler that crawls and indexes th
 </code>                                                                         
 </pre>
 
-The above code snippet will run crawl all the entire web site.
+The above code snippet will crawl and index the entire web site.
 
 h2. Searching the index
 
